@@ -1,0 +1,462 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
+
+    /* Green Signature Design System Palette variables */
+    --color-parchment: #F4F0E5;
+    --color-surface: #FFFEFA;
+    --color-ink: #202822;
+    --color-forest-dark: #103B2E;    /* Dark evergreen */
+    --color-forest: #174B3A;         /* Deep forest (signature reference) */
+    --color-forest-rich: #206A4C;    /* Primary evergreen */
+    --color-forest-success: #287756; /* Rich green / confirmed */
+    --color-sage-medium: #5F896F;    /* Medium sage-green */
+    --color-eucalyptus: #9EB9A0;     /* Muted eucalyptus */
+    --color-sage: #DCE8D8;           /* Pale sage */
+    --color-green-mist: #EAF1E6;     /* Soft green mist */
+    --color-moss: #C7D8BF;
+    --color-copper: #AD6945;
+    --color-clay: #EEDDCF;
+    --color-border: #9EB9A0;
+    --color-border-forest: #174B3A;
+    --color-danger: #B44747;
+    --color-warning: #95611C;
+    --color-success: #287756;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100vh;
+    background-color: var(--color-parchment);
+    color: var(--color-ink);
+  }
+
+  /* Visible keyboard focus everywhere (mouse clicks stay clean) */
+  :focus-visible {
+    outline: 2px solid #206A4C;
+    outline-offset: 2px;
+  }
+
+  .theme-forensic :focus-visible {
+    outline-color: #4CAE86;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+
+  /* Precision scrollbars */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #C7D8BF;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #A9C29E;
+  }
+
+  /* Dark mode scrollbars in forensic workbench */
+  .theme-forensic ::-webkit-scrollbar-thumb {
+    background: #26303D;
+  }
+
+  .theme-forensic ::-webkit-scrollbar-thumb:hover {
+    background: #364252;
+  }
+}
+
+@layer components {
+  /* Bulletproof Button System with Guaranteed Contrast */
+  .btn-primary {
+    background-color: #174B3A !important;
+    color: #FFFFFF !important;
+    border: 1px solid #113A2D !important;
+    box-shadow: 0 1px 3px 0 rgba(23, 75, 58, 0.28);
+    font-weight: 600;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background-color: #206A4C !important;
+    border-color: #174B3A !important;
+  }
+  .btn-primary:active:not(:disabled) {
+    background-color: #113A2D !important;
+  }
+
+  .btn-secondary {
+    background-color: #FFFEFA !important;
+    color: #202822 !important;
+    border: 1px solid #D9D7C9 !important;
+    box-shadow: 0 1px 2px 0 rgba(32, 40, 34, 0.04);
+    font-weight: 500;
+  }
+  .btn-secondary:hover:not(:disabled) {
+    background-color: #EAE4D3 !important;
+    color: #141A15 !important;
+    border-color: #C2BFAD !important;
+  }
+
+  .btn-danger {
+    background-color: #B44747 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #8C2E2E !important;
+    box-shadow: 0 1px 3px 0 rgba(180, 71, 71, 0.25);
+    font-weight: 600;
+  }
+  .btn-danger:hover:not(:disabled) {
+    background-color: #9C3838 !important;
+  }
+
+  .btn-outline {
+    background-color: transparent !important;
+    color: #202822 !important;
+    border: 1px solid #D9D7C9 !important;
+    font-weight: 500;
+  }
+  .btn-outline:hover:not(:disabled) {
+    background-color: #E0EADF !important;
+    color: #174B3A !important;
+    border-color: #C7D8BF !important;
+  }
+
+  .btn-ghost {
+    background-color: transparent !important;
+    color: #465349 !important;
+    border: 1px solid transparent !important;
+    font-weight: 500;
+  }
+  .btn-ghost:hover:not(:disabled) {
+    background-color: #E0EADF !important;
+    color: #174B3A !important;
+  }
+
+  /* Forensic Workbench Button Overrides */
+  .theme-forensic .btn-primary {
+    background-color: #206A4C !important;
+    border-color: #287756 !important;
+    color: #FFFFFF !important;
+  }
+  .theme-forensic .btn-primary:hover:not(:disabled) {
+    background-color: #287756 !important;
+  }
+
+  .theme-forensic .btn-secondary {
+    background-color: #161B22 !important;
+    color: #E2E8F0 !important;
+    border-color: #26303D !important;
+  }
+  .theme-forensic .btn-secondary:hover:not(:disabled) {
+    background-color: #26303D !important;
+    color: #FFFFFF !important;
+  }
+
+  .theme-forensic .btn-outline {
+    background-color: transparent !important;
+    color: #CBD5E1 !important;
+    border-color: #26303D !important;
+  }
+  .theme-forensic .btn-outline:hover:not(:disabled) {
+    background-color: #161B22 !important;
+    color: #FFFFFF !important;
+  }
+
+  .theme-forensic .btn-ghost {
+    background-color: transparent !important;
+    color: #94A3B8 !important;
+    border-color: transparent !important;
+  }
+  .theme-forensic .btn-ghost:hover:not(:disabled) {
+    background-color: #161B22 !important;
+    color: #F1F5F9 !important;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-serif);
+    letter-spacing: -0.015em;
+  }
+
+  .font-data {
+    font-family: var(--font-mono);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Registration Marks & Instrumental Fine Details */
+  .ledger-reg-mark {
+    position: relative;
+  }
+
+  .ledger-reg-mark::before {
+    content: '+';
+    position: absolute;
+    top: -6px;
+    left: -5px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    line-height: 1;
+    color: #AD6945;
+    opacity: 0.85;
+    pointer-events: none;
+  }
+
+  /* Passbook ruled pattern for customer statement */
+  .passbook-ruled {
+    background-image: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 39px,
+      rgba(217, 215, 201, 0.45) 39px,
+      rgba(217, 215, 201, 0.45) 40px
+    );
+  }
+
+  /* Deep Forest Signature Region with Subtle Bank Guilloche Depth */
+  .ledger-hero-green {
+    background: linear-gradient(145deg, #103B2E 0%, #174B3A 55%, #134233 100%);
+    color: #FFFFFF;
+    border: 1px solid #0C271E;
+    box-shadow: 0 12px 35px -6px rgba(16, 59, 46, 0.40);
+  }
+
+  /* Green Signature Tonal Hierarchy Surfaces */
+  .surface-forest {
+    background: linear-gradient(145deg, #103B2E 0%, #174B3A 55%, #134233 100%);
+    color: #FFFFFF;
+    border: 1px solid #0C271E;
+  }
+
+  .surface-evergreen {
+    background-color: #206A4C;
+    color: #FFFFFF;
+    border: 1px solid #103B2E;
+  }
+
+  .surface-green-mist {
+    background-color: #EAF1E6;
+    color: #202822;
+    border: 1px solid #9EB9A0;
+  }
+
+  .surface-pale-sage {
+    background-color: #DCE8D8;
+    color: #103B2E;
+    border: 1px solid #9EB9A0;
+  }
+
+  .surface-selected-green {
+    background-color: #174B3A !important;
+    color: #FFFFFF !important;
+    border: 2px solid #9EB9A0 !important;
+    border-left: 5px solid #DCE8D8 !important;
+    box-shadow: 0 4px 14px -2px rgba(16, 59, 46, 0.35) !important;
+  }
+
+  .surface-selected-green * {
+    color: #FFFFFF !important;
+  }
+
+  /* Section Header Bands */
+  .section-header-forest {
+    background-color: #103B2E;
+    color: #FFFFFF;
+    border-bottom: 1.5px solid #0C271E;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .section-header-forest * {
+    color: #FFFFFF;
+  }
+
+  .section-header-sage {
+    background-color: #DCE8D8;
+    color: #103B2E;
+    border-bottom: 1.5px solid #9EB9A0;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .section-header-mist {
+    background-color: #EAF1E6;
+    color: #103B2E;
+    border-bottom: 1.5px solid #9EB9A0;
+    padding: 0.875rem 1.25rem;
+  }
+
+  /* Table Headers in Green Tones */
+  .table-header-forest {
+    background-color: #103B2E;
+    color: #FFFFFF;
+    border-bottom: 1.5px solid #0C271E;
+  }
+
+  .table-header-forest th {
+    color: #FFFFFF !important;
+  }
+
+  .table-header-sage {
+    background-color: #DCE8D8;
+    color: #103B2E;
+    border-bottom: 1.5px solid #9EB9A0;
+  }
+
+  .table-header-sage th {
+    color: #103B2E !important;
+  }
+
+  /* Sidebar Active Navigation Unmistakable State */
+  .sidebar-nav-active {
+    background-color: #174B3A !important;
+    color: #FFFFFF !important;
+    font-weight: 700 !important;
+    border: 1px solid #0C271E !important;
+    border-left: 4px solid #DCE8D8 !important;
+    box-shadow: 0 2px 8px 0 rgba(16, 59, 46, 0.35) !important;
+  }
+
+  .sidebar-nav-active svg,
+  .sidebar-nav-active span,
+  .sidebar-nav-active p {
+    color: #FFFFFF !important;
+  }
+
+  .sidebar-nav-inactive {
+    color: #202822 !important;
+    border: 1px solid transparent !important;
+  }
+
+  .sidebar-nav-inactive:hover {
+    background-color: #EAF1E6 !important;
+    color: #103B2E !important;
+  }
+
+  .sidebar-nav-inactive svg {
+    color: #206A4C !important;
+  }
+
+  /* Financial Security Double Border */
+  .security-border {
+    border: 3px double #9EB9A0;
+  }
+
+  .security-border-gold {
+    border: 3px double #DFD0A8;
+  }
+
+  .security-border-forest {
+    border: 3px double #174B3A;
+  }
+
+  /* Coordinated Green Surface Hierarchy */
+  .surface-level-1 {
+    background-color: #F4F0E5;
+  }
+
+  /* Secondary Section Boxes: Soft Green Mist with Eucalyptus Border */
+  .surface-level-2 {
+    background-color: #EAF1E6;
+    border: 1.5px solid #9EB9A0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px 0 rgba(23, 75, 58, 0.08);
+  }
+
+  /* Nested Boxes: Pale Sage Surface with Deep-Ink Text */
+  .surface-level-3 {
+    background-color: #DCE8D8;
+    border: 1px solid #7FA382;
+    border-radius: 0.375rem;
+  }
+
+  /* Selected Boxes: Deep Forest with White Text and Distinct Border */
+  .surface-level-4 {
+    background-color: #174B3A;
+    color: #FFFFFF;
+    border: 2px solid #9EB9A0;
+    border-left: 5px solid #DCE8D8;
+    border-radius: 0.375rem;
+    box-shadow: 0 4px 12px -2px rgba(16, 59, 46, 0.25);
+  }
+
+  /* Section Header Band */
+  .section-header-band {
+    background-color: #103B2E;
+    color: #FFFFFF;
+    border-bottom: 1.5px solid #0C271E;
+    padding: 0.875rem 1.25rem;
+  }
+
+  .section-header-band * {
+    color: #FFFFFF;
+  }
+
+  /* Soft sage accent badge/card */
+  .surface-sage {
+    background-color: #DCE8D8;
+    border: 1px solid #9EB9A0;
+    color: #103B2E;
+  }
+
+  /* Warm clay accent badge/card */
+  .surface-clay {
+    background-color: #EEDDCF;
+    border: 1px solid #DFD8C1;
+    color: #693820;
+  }
+
+  /* Structural Card & Containers */
+  .editorial-card {
+    background-color: #EAF1E6;
+    border: 1.5px solid #9EB9A0;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 6px 0 rgba(23, 75, 58, 0.08);
+  }
+
+  .editorial-panel {
+    background-color: #DCE8D8;
+    border: 1px solid #9EB9A0;
+    border-radius: 0.375rem;
+  }
+
+  .editorial-header {
+    background-color: #103B2E;
+    color: #FFFFFF;
+    border-bottom: 1.5px solid #0C271E;
+  }
+
+  .glass-panel {
+    background-color: #EAF1E6;
+    border: 1.5px solid #9EB9A0;
+    box-shadow: 0 2px 6px 0 rgba(23, 75, 58, 0.08);
+  }
+
+  .glow-emerald, .glow-amber, .glow-rose {
+    box-shadow: none !important;
+  }
+}

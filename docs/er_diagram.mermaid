@@ -1,0 +1,228 @@
+erDiagram
+    USERS ||--o| CUSTOMERS : "profiles"
+    USERS ||--o{ AUDIT_LOGS : "acts_as"
+    CUSTOMERS ||--o{ ACCOUNTS : "owns"
+    ACCOUNTS ||--o{ TRANSFER_REQUESTS : "sources"
+    ACCOUNTS ||--o{ TRANSFER_REQUESTS : "destines"
+    ACCOUNTS ||--o{ LEDGER_ENTRIES : "posts_to"
+    TRANSFER_REQUESTS ||--o| LEDGER_TRANSACTIONS : "posts_as"
+    TRANSFER_REQUESTS ||--o| FRAUD_PREDICTIONS : "scored_by"
+    LEDGER_TRANSACTIONS ||--|{ LEDGER_ENTRIES : "contains_legs"
+    FRAUD_PREDICTIONS ||--o| USERS : "reviewed_by"
+    CUSTOMERS ||--o{ INVESTMENTS : "holds"
+    FINANCIAL_PRODUCTS ||--o{ INVESTMENTS : "underlies"
+    ACCOUNTS ||--o{ PAYEE_EDGES : "sources"
+    ACCOUNTS ||--o{ PAYEE_EDGES : "destines"
+    CUSTOMERS ||--o{ SAVED_PAYEES : "saves"
+    FRAUD_PREDICTIONS ||--o{ INVESTIGATION_NOTES : "documents"
+    CUSTOMERS ||--o{ DISPUTES : "files"
+    TRANSFER_REQUESTS ||--o{ DISPUTES : "disputed_in"
+    DISPUTES ||--|{ CASE_EVENTS : "tracks"
+    ACCOUNTS ||--o{ GRAPH_FINDINGS : "detected_on"
+    USERS ||--o{ SIMULATION_RUNS : "runs"
+
+    USERS {
+        uuid id PK
+        varchar username UK
+        varchar email UK
+        varchar password_hash
+        varchar role "CUSTOMER | STAFF | ADMIN"
+        boolean is_active
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    CUSTOMERS {
+        uuid id PK
+        uuid user_id FK,UK
+        varchar full_name
+        varchar phone
+        varchar pan_number
+        varchar kyc_status "PENDING | VERIFIED | REJECTED"
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    ACCOUNTS {
+        uuid id PK
+        uuid customer_id FK "nullable for clearing"
+        varchar account_number UK
+        varchar account_type "SAVINGS | CURRENT | INTERNAL_CLEARING | INVESTMENT"
+        varchar currency "INR"
+        numeric cached_balance ">= 0 for customers"
+        varchar status "ACTIVE | FROZEN | CLOSED"
+        integer version
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    TRANSFER_REQUESTS {
+        uuid id PK
+        varchar idempotency_key
+        uuid source_user_id FK
+        varchar request_hash
+        uuid source_account_id FK
+        uuid destination_account_id FK
+        numeric amount "> 0.00"
+        varchar currency "INR"
+        varchar status "PENDING | POSTED | FAILED | REVERSED"
+        text failure_reason
+        timestamptz created_at
+        timestamptz posted_at
+    }
+
+    LEDGER_TRANSACTIONS {
+        uuid id PK
+        uuid transfer_request_id FK,UK
+        varchar transaction_type "CUSTOMER_TRANSFER | INITIAL_DEPOSIT | CORRECTION_REVERSAL | INVESTMENT_PURCHASE"
+        varchar description
+        timestamptz created_at
+    }
+
+    LEDGER_ENTRIES {
+        uuid id PK
+        uuid transaction_id FK
+        uuid account_id FK
+        varchar entry_type "DEBIT | CREDIT"
+        numeric amount "> 0.00"
+        smallint sequence_num
+        timestamptz created_at
+    }
+
+    AUDIT_LOGS {
+        bigserial id PK
+        uuid actor_user_id FK
+        varchar action
+        varchar entity_type
+        varchar entity_id
+        varchar ip_address
+        varchar user_agent
+        jsonb metadata_json
+        timestamptz created_at
+    }
+
+    FRAUD_PREDICTIONS {
+        uuid id PK
+        uuid transfer_request_id FK,UK
+        varchar model_version
+        numeric risk_score "0.0000 - 1.0000"
+        varchar decision "LOW_RISK | MEDIUM_RISK | HIGH_RISK"
+        jsonb rule_flags
+        jsonb feature_snapshot
+        text explanation
+        varchar review_status "PENDING | CLEARED | CONFIRMED_FRAUD | ESCALATED"
+        uuid reviewed_by_user_id FK
+        text review_notes
+        timestamptz reviewed_at
+        timestamptz created_at
+    }
+
+    FINANCIAL_PRODUCTS {
+        uuid id PK
+        varchar name
+        varchar code UK
+        varchar product_type "FIXED_DEPOSIT | RECURRING_DEPOSIT | MUTUAL_FUND | TREASURY_BILL"
+        numeric annual_yield_rate
+        numeric min_amount
+        integer term_months
+        boolean is_active
+        timestamptz created_at
+    }
+
+    INVESTMENTS {
+        uuid id PK
+        uuid customer_id FK
+        uuid account_id FK
+        uuid product_id FK
+        numeric invested_amount "> 0.00"
+        numeric current_value
+        varchar status "ACTIVE | MATURED | LIQUIDATED"
+        timestamptz start_date
+        timestamptz maturity_date
+        timestamptz created_at
+    }
+
+    PAYEE_EDGES {
+        uuid id PK
+        uuid source_account_id FK
+        uuid destination_account_id FK
+        integer transfer_count
+        numeric total_amount
+        numeric avg_amount
+        timestamptz first_transfer_at
+        timestamptz last_transfer_at
+    }
+
+    SAVED_PAYEES {
+        uuid id PK
+        uuid customer_id FK
+        uuid account_id FK
+        varchar nickname
+        boolean is_verified
+        timestamptz created_at
+    }
+
+    INVESTIGATION_NOTES {
+        uuid id PK
+        uuid fraud_prediction_id FK
+        uuid staff_user_id FK
+        varchar note_type "OBSERVATION | HYPOTHESIS | CORROBORATING_EVIDENCE | RESOLUTION_RATIONALE"
+        text content
+        timestamptz created_at
+    }
+
+    DISPUTES {
+        uuid id PK
+        uuid customer_id FK
+        uuid transfer_request_id FK
+        varchar category "UNAUTHORIZED | SUSPICIOUS_PAYEE | AMOUNT_DISCREPANCY | PROCESSING_DELAY | OTHER"
+        text description
+        varchar status "OPEN | INVESTIGATING | NEEDS_INFO | RESOLVED | REJECTED"
+        uuid assigned_staff_id FK
+        text resolution_notes
+        timestamptz resolved_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+
+    CASE_EVENTS {
+        uuid id PK
+        uuid dispute_id FK
+        uuid actor_user_id FK
+        varchar actor_role "CUSTOMER | STAFF | ADMIN"
+        varchar event_type "DISPUTE_OPENED | STATUS_CHANGE | CUSTOMER_RESPONSE | RESOLVED | REJECTED"
+        varchar from_status
+        varchar to_status
+        text notes
+        jsonb metadata_snapshot
+        timestamptz created_at
+    }
+
+    GRAPH_FINDINGS {
+        uuid id PK
+        varchar pattern_type "FAN_IN | FAN_OUT | RAPID_PASS_THROUGH | MULTI_HOP_LAYERING | CIRCULAR_WASH | BURST_VELOCITY"
+        varchar pattern_version
+        varchar severity "INFO | SUSPICIOUS | CRITICAL"
+        numeric heuristic_score
+        uuid primary_account_id FK
+        timestamptz time_window_start
+        timestamptz time_window_end
+        jsonb evidence_json
+        text explanation
+        varchar review_status "PENDING | CLEARED | CONFIRMED_FRAUD | ESCALATED"
+        uuid reviewed_by_user_id FK
+        text review_notes
+        timestamptz reviewed_at
+        timestamptz created_at
+    }
+
+    SIMULATION_RUNS {
+        uuid id PK
+        varchar scenario_name
+        integer seed
+        integer sample_size
+        jsonb summary_metrics
+        uuid executed_by_user_id FK
+        timestamptz created_at
+    }
+

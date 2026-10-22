@@ -1,0 +1,27 @@
+# FinLedger-AI — Optional Docker Compose Configuration
+# Note: Docker is strictly optional. Native local PostgreSQL 16 on Windows is fully supported.
+
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: finledger_db
+    restart: unless-stopped
+    ports:
+      - "${DB_PORT:-5432}:5432"
+    environment:
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?DB_PASSWORD must be set in .env}
+      POSTGRES_DB: ${DB_NAME:-finledger}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pgdata:
+    driver: local

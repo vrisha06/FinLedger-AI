@@ -1,0 +1,34 @@
+{
+  "model_version": "rf-v1.0.0",
+  "algorithm": "RandomForestClassifier",
+  "created_at": "2026-10-11T16:28:05.409715+00:00",
+  "random_seed": 42,
+  "decision_threshold": 0.7,
+  "feature_names": [
+    "amount",
+    "log_amount",
+    "hour_of_day",
+    "is_night",
+    "day_of_week",
+    "is_weekend",
+    "customer_tx_count",
+    "customer_avg_amount",
+    "amount_to_avg_ratio",
+    "time_since_last_tx_sec",
+    "tx_velocity_1h",
+    "is_new_destination"
+  ],
+  "train_samples": 7000,
+  "val_samples": 1500,
+  "test_samples": 1500,
+  "train_fraud_count": 188,
+  "train_fraud_rate": 0.0269,
+  "val_fraud_count": 35,
+  "hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 10,
+    "min_samples_split": 5,
+    "min_samples_leaf": 2,
+    "class_weight": "balanced"
+  }
+}
